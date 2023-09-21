@@ -11,8 +11,16 @@ import { JsxElement } from "typescript";
 import { FC } from "react";
 import { ThemeProvider, useTheme } from "@emotion/react";
 import { theme } from "../../theme";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { pathSlice } from "../../store/reducers/UseSlice";
 
 export const Header: FC = () => {
+  const { openDialog } = pathSlice.actions;
+  const dispatch = useAppDispatch();
+  const handleBtnClick = () => {
+    dispatch(openDialog());
+  };
+
   return (
     <AppBar component="nav" color="transparent" position="static" elevation={0}>
       <Toolbar
@@ -37,6 +45,7 @@ export const Header: FC = () => {
         </Typography>
         <Box>
           <Button
+            onClick={handleBtnClick}
             variant="contained"
             sx={{
               fontWeight: "600",

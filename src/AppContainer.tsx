@@ -4,6 +4,7 @@ import { theme } from "./theme";
 import { Home } from "./pages";
 import { setupStore } from "./store/store";
 import { Provider } from "react-redux";
+import { AddPathDialog } from "./templates/layout/AddPathDialog";
 
 const store = setupStore();
 
