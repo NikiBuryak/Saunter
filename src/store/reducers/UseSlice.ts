@@ -1,15 +1,18 @@
-import {createSlice} from "@reduxjs/toolkit"
+import {createSlice,PayloadAction} from "@reduxjs/toolkit"
+import { IPath } from "../../models/IPath"
+import { IPosition } from "../../models/IPosition";
+import { stat } from "fs";
 
 interface PathState {
-    paths: Array<number>
-    isLoading:boolean
-    isDialogOpened:boolean
-    error: string
+    paths: IPosition[];
+    activePath:IPath|null;
+    isDialogOpened:boolean;
+    error: string;
 }
 
-const initialState ={
+const initialState:PathState ={
     paths:[],
-    isLoading:false,
+    activePath:null,
     isDialogOpened:false,
     error:''
 }
@@ -24,6 +27,14 @@ export const pathSlice = createSlice({
         },
         closeDialog(state){
             state.isDialogOpened=false
+        },
+        setMarkers(state,action: PayloadAction<IPosition[]>){
+            const {payload} = action;
+            state.paths = [...payload]
+        },
+        setActivePath(state, action:PayloadAction<IPath>){
+            const {payload} = action;
+            state.activePath = {...payload}
         }
     }
 })

@@ -10,18 +10,22 @@ import {
 import env from "react-dotenv";
 import { current } from "@reduxjs/toolkit";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { log } from "console";
+import { useAppDispatch } from "../hooks/redux";
+import { pathSlice } from "../store/reducers/UseSlice";
+import { pathsApi } from "../services/PathService";
 
 export const Map: React.FC<IMap> = ({ markers, setDistance }) => {
   const [mapMarkers, setMapMarkers] = useState<IPosition[] | undefined>(
     markers
   );
-
   const [isActive, setIsActive] = useState<boolean>(false);
-
+  const dispatch = useAppDispatch();
+  const { setMarkers } = pathSlice.actions;
   const refMap: IMapRef = useRef(null);
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: env.GOOGLE_API_KEY,
+    googleMapsApiKey: "AIzaSyACXTOGkqHMjmtE9rk4Lm4dFzvOVhZap8Y",
   });
 
   const centerMap = useMemo<google.maps.LatLngLiteral>(
@@ -55,6 +59,7 @@ export const Map: React.FC<IMap> = ({ markers, setDistance }) => {
         : [newMarker];
 
       setMapMarkers((state) => (state = newMarkers));
+      dispatch(setMarkers(newMarkers));
     }
   };
 
@@ -122,18 +127,18 @@ export const Map: React.FC<IMap> = ({ markers, setDistance }) => {
       onUnmount={handleUnmountMap}
       mapContainerStyle={{
         width: "100%",
-        height: "400px",
+        height: "300px",
       }}
       options={{
         clickableIcons: false,
         disableDefaultUI: true,
         disableDoubleClickZoom: true,
-        fullscreenControl: true,
-        mapId: env.GOOGLE_MAP_ID,
+        fullscreenControl: false,
+        mapId: "8ac5887943cb7d16",
       }}
       {...(!markers?.length && isActive && { onClick: handleMapClick })}
     >
-      {!isActive && (
+      {!markers && !isActive && (
         <Button
           variant="outlined"
           startIcon={<LocationOnIcon />}

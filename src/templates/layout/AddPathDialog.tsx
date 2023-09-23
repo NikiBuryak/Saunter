@@ -1,32 +1,37 @@
 import { FC, useState } from "react";
-import {
-  Dialog,
-  Typography,
-  Container,
-  Box,
-  IconButton,
-  Grid,
-} from "@mui/material";
+import { Dialog, Typography, Box, IconButton, Grid } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { pathSlice } from "../../store/reducers/UseSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import { theme } from "../../theme";
 import { Map } from "../../components/Map";
 import { PathForm } from "../../components/PathForm";
+import { IForm } from "../../models/IForm";
+import { pathsApi } from "../../services/PathService";
 
 export const AddPathDialog: FC = () => {
   const { isDialogOpened } = useAppSelector((state) => state.pathsReducer);
   const [distance, setDistance] = useState<number>(0);
   const dispatch = useAppDispatch();
+  const markers = useAppSelector((state) => state.pathsReducer.paths);
   const { closeDialog } = pathSlice.actions;
+  const [addPath, { isLoading, error }] = pathsApi.useAddPathMutation();
 
   const handleDialogClose = () => {
     dispatch(closeDialog());
   };
 
-  const handleSubmit = (data: any) => {
-    console.log(data, "data");
+  const handleSubmit = ({ fullDescr, shortDescr, title }: IForm) => {
+    const newPath = {
+      distance,
+      fullDescr,
+      title,
+      shortDescr,
+      paths: markers,
+      isFavorite: 0,
+    };
     dispatch(closeDialog());
+    addPath(newPath);
   };
 
   return (
