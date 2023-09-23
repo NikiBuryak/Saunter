@@ -62,7 +62,7 @@ export const PathForm = ({ submitHandler, distance }: Props) => {
           }}
           {...register("fullDescr")}
         />
-        {!!distance && (
+        {distance ? (
           <Box
             sx={{
               padding: `${theme.spacing(6)} 0`,
@@ -80,6 +80,8 @@ export const PathForm = ({ submitHandler, distance }: Props) => {
               Length {distance} km
             </Typography>
           </Box>
+        ) : (
+          <Typography variant="body2">Check your path</Typography>
         )}
         <Box
           sx={{
@@ -90,6 +92,7 @@ export const PathForm = ({ submitHandler, distance }: Props) => {
           <Button
             type="submit"
             variant="outlined"
+            disabled={!distance || distance < 0}
             startIcon={<CheckIcon />}
             sx={{
               padding: `${theme.spacing(2)} ${theme.spacing(4)}`,

@@ -1,14 +1,18 @@
 import { combineReducers,configureStore } from "@reduxjs/toolkit";
 import { type } from "os";
 import pathsReducer from './reducers/UseSlice'; 
+import { pathsApi } from "../services/PathService";
 
 const rootReducer = combineReducers({
-    pathsReducer
+    pathsReducer,
+    [pathsApi.reducerPath]: pathsApi.reducer
 })
 
 export const setupStore = ()=>{
     return configureStore({
-        reducer:rootReducer
+        reducer:rootReducer,
+        middleware:(getDefaultMiddleware)=> 
+        getDefaultMiddleware({  serializableCheck: false,}).concat(pathsApi.middleware)
     })
 }
 

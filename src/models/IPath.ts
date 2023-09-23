@@ -1,8 +1,11 @@
+import { IPosition } from "./IPosition"
 
 export interface IPath{
-    id:number,
+    id:string,
     title:string,
-    shortDescr:string,
-    descr:string,
-    paths:Array<number>
+    shortDescr:string|undefined,
+    fullDescr:string|undefined,
+    paths:IPosition[]
+    isFavorite:number
+    distance:number|undefined
 }

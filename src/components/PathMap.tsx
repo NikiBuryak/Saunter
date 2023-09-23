@@ -3,16 +3,17 @@ import { FC } from "react";
 
 import { IMap, IPosition } from "../models/IPosition";
 import { Map } from "./Map";
+import { useAppSelector } from "../hooks/redux";
 
-const positions: google.maps.LatLngLiteral[] = [
-  // { lat: 48.43648044523034, lng: 35.00278695361484 },
-  // { lat: 48.6, lng: 35.5 },
-];
-export const PathMap: FC = () => {
+interface IProps {
+  markers: IPosition[];
+}
+
+export const PathMap: FC<IProps> = ({ markers }) => {
   return (
     <>
       <Typography variant="h6"> Map</Typography>
-      <Map markers={positions} />
+      <Map markers={markers} />
     </>
   );
 };
