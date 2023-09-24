@@ -1,13 +1,16 @@
 import {createApi, fakeBaseQuery} from "@reduxjs/toolkit/query/react"
-import { collection, getDocs, orderBy, addDoc,updateDoc, doc, deleteDoc } from "firebase/firestore";
+import { collection, getDocs, addDoc,updateDoc, doc, deleteDoc, getDoc } from "firebase/firestore";
 import {db} from "./FireBase"
 import { IPath } from "../models/IPath";
-import { log } from "console";
+import { string } from "yargs";
 
 interface IFavorite{
   id:string
   isFavorite:number
 }
+
+type TListReturn = Error
+
 
 export const pathsApi = createApi({
   reducerPath:  'pathsApi',
@@ -26,17 +29,32 @@ export const pathsApi = createApi({
             }
             
            } catch (error) {
-            return {error}
+            return {error:error}
            }
         },
         providesTags:result=>["Paths"]
     }),
+    getSinglePath: build.query({
+      queryFn:async(id:string)=>{
+         try {
+          
+          const col = doc(db, "paths", id);
+          const pathsSnapshot = await getDoc(col);
+          return{
+            data:pathsSnapshot.data()
+             }
+         } catch (error) {
+          return {error}
+         }
+      },
+      providesTags:result=>["Paths"]
+  }),
     addPath: build.mutation({
-      queryFn: async(path)=>{
+      queryFn: async(path:IPath)=>{
         try {
           const col = collection(db, "paths");
           const pathsSnapshot = await addDoc(col, path);
-          return {data:path}
+          return {data:pathsSnapshot}
         } catch (error) {
             return{error}
         }
@@ -44,7 +62,7 @@ export const pathsApi = createApi({
       invalidatesTags:result=>["Paths"]
     }),
     changeFavorite: build.mutation({
-      queryFn: async({id,isFavorite}:any) =>{
+      queryFn: async({id,isFavorite}:IFavorite) =>{
           try {
             const pathDoc = doc(db, 'paths', id);
 
@@ -59,7 +77,7 @@ export const pathsApi = createApi({
       invalidatesTags:result=>["Paths"]
     }),
     deletePath : build.mutation({
-      queryFn: async (id)=>{
+      queryFn: async (id:string)=>{
         try {
           const pathDoc = doc(db,'paths', id);
           const resp = await deleteDoc (pathDoc);

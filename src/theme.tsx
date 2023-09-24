@@ -1,6 +1,31 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme } from "@mui/material";
+
+declare module "@mui/material" {
+  interface TypographyVariants {
+    error: React.CSSProperties;
+  }
+
+  // allow configuration using `createTheme`
+  interface TypographyVariantsOptions {
+    error?: React.CSSProperties;
+  }
+}
+
+// Update the Typography's variant prop options
+declare module "@mui/material/Typography" {
+  interface TypographyPropsVariantOverrides {
+    error: true;
+  }
+}
 
 export const theme = createTheme({
+  typography: {
+    error: {
+      fontWeight: 400,
+      lineHeight: 1.5,
+      fontSize: "1rem",
+    },
+  },
   components: {
     MuiButton: {
       styleOverrides: {
@@ -34,8 +59,21 @@ export const theme = createTheme({
         paper: {
           maxWidth: "unset",
           margin: 0,
-          border: "3px solid #7c7c7c",
-          borderRadius: "5px",
+          width: "100%",
+          "@media (min-width:600px)": {
+            width: "calc(100% - 64px)",
+            border: "3px solid #7c7c7c",
+            borderRadius: "5px",
+          },
+        },
+        container: {
+          alignItems: "flex-start",
+          padding: 10,
+
+          "@media (min-width:600px)": {
+            alignItems: "center",
+            padding: 0,
+          },
         },
       },
     },
@@ -44,6 +82,13 @@ export const theme = createTheme({
         elevation: {
           margin: 0,
           height: "auto",
+        },
+      },
+    },
+    MuiListItemSecondaryAction: {
+      styleOverrides: {
+        root: {
+          right: 0,
         },
       },
     },

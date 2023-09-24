@@ -15,7 +15,7 @@ export const AddPathDialog: FC = () => {
   const dispatch = useAppDispatch();
   const markers = useAppSelector((state) => state.pathsReducer.paths);
   const { closeDialog } = pathSlice.actions;
-  const [addPath, { isLoading, error }] = pathsApi.useAddPathMutation();
+  const [addPath, { error: addPathError }] = pathsApi.useAddPathMutation();
 
   const handleDialogClose = () => {
     dispatch(closeDialog());
@@ -30,8 +30,14 @@ export const AddPathDialog: FC = () => {
       paths: markers,
       isFavorite: 0,
     };
-    dispatch(closeDialog());
+
     addPath(newPath);
+
+    if (addPathError) {
+      console.error(addPathError);
+      return <Typography>Opps something went wrong!</Typography>;
+    }
+    dispatch(closeDialog());
   };
 
   return (
@@ -39,35 +45,10 @@ export const AddPathDialog: FC = () => {
       open={isDialogOpened}
       onClose={handleDialogClose}
       fullWidth={true}
-      sx={{
-        padding: "10px 0",
-        display: "block",
-        maxWidth: "850px",
-        minHeight: "550px",
-        margin: "0 auto",
-
-        "@media (min-width:768px)": {
-          padding: "50px 0",
-        },
-      }}
+      sx={dialogStyles}
     >
-      <Box
-        sx={{
-          width: "100%",
-          height: "100%",
-          display: "block",
-          maxWidth: "800px",
-          padding: 0,
-        }}
-      >
-        <Box
-          sx={{
-            padding: theme.spacing(2),
-            borderBottom: "2px solid #7c7c7c",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
+      <Box sx={contentWrapperStyles}>
+        <Box sx={headerWrapperStyles}>
           <Typography
             variant="body1"
             sx={{
@@ -81,28 +62,38 @@ export const AddPathDialog: FC = () => {
           </IconButton>
         </Box>
         <Grid container>
-          <Grid
-            item
-            xs={12}
-            md={6}
-            sx={{
-              padding: theme.spacing(3),
-            }}
-          >
+          <Grid item xs={12} md={6} sx={dialogColumnStyles}>
             <PathForm submitHandler={handleSubmit} distance={distance} />
           </Grid>
-          <Grid
-            item
-            xs={12}
-            md={6}
-            sx={{
-              padding: theme.spacing(3),
-            }}
-          >
+          <Grid item xs={12} md={6} sx={dialogColumnStyles}>
             <Map setDistance={setDistance} />
           </Grid>
         </Grid>
       </Box>
     </Dialog>
   );
+};
+
+const dialogStyles = {
+  padding: { xs: "10px 0", md: "50px 0" },
+  display: "block",
+  maxWidth: "850px",
+  minHeight: "550px",
+  margin: "0 auto",
+};
+const contentWrapperStyles = {
+  width: "100%",
+  height: "100%",
+  display: "block",
+  maxWidth: "800px",
+  padding: 0,
+};
+const headerWrapperStyles = {
+  padding: theme.spacing(2),
+  borderBottom: "2px solid #7c7c7c",
+  display: "flex",
+  alignItems: "center",
+};
+const dialogColumnStyles = {
+  padding: theme.spacing(3),
 };

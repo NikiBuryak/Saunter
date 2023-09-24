@@ -1,10 +1,9 @@
 import { Typography, Card, CardContent, Box } from "@mui/material";
-import { FC, useCallback, useEffect } from "react";
 import { PathMap } from "./PathMap";
-import { useAppSelector } from "../hooks/redux";
-import { IPath } from "../models/IPath";
 import { theme } from "../theme";
 import { pathsApi } from "../services/PathService";
+import { IPath } from "../models/IPath";
+import { useState, useEffect } from "react";
 
 interface IProps {
   id: string;
@@ -12,25 +11,46 @@ interface IProps {
 }
 
 export const PathCard = ({ id, setActivePath }: IProps) => {
-  const { isLoading, data, error } = pathsApi.useGetPathsQuery("");
-
-  if (isLoading) {
-    return <Typography variant="body1">Loading...</Typography>;
-  }
-
-  const current = data && data.find((e) => e.id === id);
-
-  if (!current) {
-    return <Typography>Something gone wrong</Typography>;
-  }
-
-  const { isFavorite, distance, title, shortDescr, fullDescr, paths } = current;
+  const {
+    data: currentData,
+    isLoading,
+    error,
+  } = pathsApi.useGetSinglePathQuery(id);
 
   const [changeFavorite, { isLoading: isLoadingChange, error: changeError }] =
     pathsApi.useChangeFavoriteMutation();
 
   const [deletePath, { isLoading: isLoadingError, error: deleteError }] =
     pathsApi.useDeletePathMutation();
+
+  if (!currentData && isLoading) {
+    <Box sx={errorBoxStyles}>
+      <Typography variant="body1">Loading.1..</Typography>;
+    </Box>;
+  }
+  if (isLoading || isLoadingChange || isLoadingError) {
+    <Box sx={errorBoxStyles}>
+      <Typography variant="body1">Loading...</Typography>;
+    </Box>;
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ background: "red" }}>
+        <Typography>Oops! Someting gone wrong. Try again later...</Typography>
+      </Box>
+    );
+  }
+  if (!currentData) {
+    return (
+      <Box sx={errorBoxStyles}>
+        <Typography>Oops! Someting gone wrong. Try again later...</Typography>
+      </Box>
+    );
+  }
+
+  const { isFavorite, distance, title, fullDescr, paths } = currentData;
+
   const handleAddFavClick = () => {
     const data = { isFavorite, id };
     changeFavorite(data);
@@ -40,15 +60,29 @@ export const PathCard = ({ id, setActivePath }: IProps) => {
     deletePath(id);
   };
 
+  if (changeError || deleteError) {
+    const error = changeError || deleteError;
+    console.error(error);
+
+    return (
+      <Box sx={errorBoxStyles}>
+        <Typography variant="body1">
+          Something gone wrong, try again later
+        </Typography>
+      </Box>
+    );
+  }
+  const markers = [...paths];
+
   return (
-    <Card>
-      <CardContent>
+    <Card sx={{ boxShadow: "none" }}>
+      <CardContent sx={{ padding: 0 }}>
         <Box sx={cardHeadingStyles}>
           <Typography variant="h5">{title}</Typography>
-          <Typography variant="body1">{distance} km</Typography>
+          <Typography variant="h6">{distance} km</Typography>
         </Box>
         <Typography variant="body1">{fullDescr}</Typography>
-        <PathMap markers={paths} />
+        <PathMap markers={markers} />
         <Box sx={pathActionsStyles}>
           <Typography
             variant="body1"
@@ -95,4 +129,11 @@ const pathRemoveStyles = {
 const cardHeadingStyles = {
   display: "flex",
   justifyContent: "space-between",
+};
+
+const errorBoxStyles = {
+  height: "100%",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 };

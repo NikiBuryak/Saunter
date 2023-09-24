@@ -12,7 +12,6 @@ interface IProps {
 export const PathMap: FC<IProps> = ({ markers }) => {
   return (
     <>
-      <Typography variant="h6"> Map</Typography>
       <Map markers={markers} />
     </>
   );

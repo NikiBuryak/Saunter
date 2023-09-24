@@ -1,17 +1,8 @@
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Button,
-  Typography,
-  Box,
-} from "@mui/material";
+import { AppBar, Toolbar, Button, Typography, Box } from "@mui/material";
 import { Arrows } from "../../svg/arrows";
-import { JsxElement } from "typescript";
 import { FC } from "react";
-import { ThemeProvider, useTheme } from "@emotion/react";
 import { theme } from "../../theme";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { useAppDispatch } from "../../hooks/redux";
 import { pathSlice } from "../../store/reducers/UseSlice";
 
 export const Header: FC = () => {
@@ -23,33 +14,16 @@ export const Header: FC = () => {
 
   return (
     <AppBar component="nav" color="transparent" position="static" elevation={0}>
-      <Toolbar
-        disableGutters={true}
-        variant="dense"
-        sx={{
-          padding: `0 0 ${theme.spacing(4)}`,
-          borderBottom: "2px solid #7c7c7c",
-        }}
-      >
+      <Toolbar disableGutters={true} variant="dense" sx={logoStyles}>
         <Arrows />
-        <Typography
-          variant="h4"
-          component="div"
-          sx={{
-            padding: `0 ${theme.spacing(3)}`,
-            display: "block",
-            flexGrow: 1,
-          }}
-        >
+        <Typography variant="h4" component="div" sx={titleStyles}>
           Saunter
         </Typography>
         <Box>
           <Button
             onClick={handleBtnClick}
             variant="contained"
-            sx={{
-              fontWeight: "600",
-            }}
+            sx={addButtonStyles}
           >
             Add Path
           </Button>
@@ -57,4 +31,27 @@ export const Header: FC = () => {
       </Toolbar>
     </AppBar>
   );
+};
+
+const addButtonStyles = {
+  fontWeight: "600",
+  backgroundColor: "#0088cc",
+  border: "1px solid #0088cc",
+  color: "#fff",
+  "&:hover": {
+    color: "#0088cc",
+    backgroundColor: "#ffffff",
+    borderColor: "#0088cc",
+  },
+};
+
+const titleStyles = {
+  padding: `0 ${theme.spacing(3)}`,
+  display: "block",
+  flexGrow: 1,
+};
+
+const logoStyles = {
+  padding: `0 0 ${theme.spacing(4)}`,
+  borderBottom: "2px solid #7c7c7c",
 };
