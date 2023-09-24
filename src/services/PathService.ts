@@ -2,15 +2,11 @@ import {createApi, fakeBaseQuery} from "@reduxjs/toolkit/query/react"
 import { collection, getDocs, addDoc,updateDoc, doc, deleteDoc, getDoc } from "firebase/firestore";
 import {db} from "./FireBase"
 import { IPath } from "../models/IPath";
-import { string } from "yargs";
 
 interface IFavorite{
   id:string
   isFavorite:number
 }
-
-type TListReturn = Error
-
 
 export const pathsApi = createApi({
   reducerPath:  'pathsApi',
@@ -27,17 +23,15 @@ export const pathsApi = createApi({
             return{
                 data: pathList
             }
-            
            } catch (error) {
             return {error:error}
            }
         },
-        providesTags:result=>["Paths"]
+        providesTags:["Paths"]
     }),
     getSinglePath: build.query({
       queryFn:async(id:string)=>{
          try {
-          
           const col = doc(db, "paths", id);
           const pathsSnapshot = await getDoc(col);
           return{
@@ -47,7 +41,7 @@ export const pathsApi = createApi({
           return {error}
          }
       },
-      providesTags:result=>["Paths"]
+      providesTags:["Paths"]
   }),
     addPath: build.mutation({
       queryFn: async(path:IPath)=>{
@@ -59,22 +53,20 @@ export const pathsApi = createApi({
             return{error}
         }
       },
-      invalidatesTags:result=>["Paths"]
+      invalidatesTags:["Paths"]
     }),
     changeFavorite: build.mutation({
       queryFn: async({id,isFavorite}:IFavorite) =>{
           try {
             const pathDoc = doc(db, 'paths', id);
-
             const newField = {isFavorite: isFavorite === 1 ? 0 : 1};
             const updPath = await updateDoc(pathDoc,newField)
-            
             return {data:updPath}
           } catch (error) {
             return {error}
           }
       },
-      invalidatesTags:result=>["Paths"]
+      invalidatesTags:["Paths"]
     }),
     deletePath : build.mutation({
       queryFn: async (id:string)=>{
@@ -86,7 +78,7 @@ export const pathsApi = createApi({
           return {error}
         }
       },
-      invalidatesTags:result=>["Paths"]
+      invalidatesTags:["Paths"]
     })
   })
 })

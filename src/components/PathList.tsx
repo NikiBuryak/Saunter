@@ -1,22 +1,11 @@
-import {
-  Typography,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
-import GradeIcon from "@mui/icons-material/Grade";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { Typography, List, InputAdornment, TextField } from "@mui/material";
+
 import { FC, useState } from "react";
 import { pathsApi } from "../services/PathService";
-import { Arrows } from "../svg/arrows";
 import { theme } from "../theme";
 import SearchIcon from "@mui/icons-material/Search";
 import { IPath } from "../models/IPath";
-import useWindowDimensions from "../hooks/dimensions";
+import { PathListItem } from "./PathListItem";
 
 interface IProps {
   setActivePath: Function;
@@ -30,8 +19,6 @@ interface IPathItem extends IPath {
 export const PathList: FC<IProps> = ({ activePath, setActivePath }) => {
   const { isLoading, data, error } = pathsApi.useGetPathsQuery("");
   const [searchParam, serSearchParam] = useState<string>("");
-
-  const { width, height } = useWindowDimensions();
 
   if (isLoading) {
     return <Typography variant="h4">Loading...</Typography>;
@@ -48,7 +35,7 @@ export const PathList: FC<IProps> = ({ activePath, setActivePath }) => {
     setActivePath(id);
   };
 
-  let paths;
+  let paths: IPathItem[];
   if (searchParam.length > 0) {
     paths = data.filter(
       (el: IPathItem) =>
@@ -78,87 +65,18 @@ export const PathList: FC<IProps> = ({ activePath, setActivePath }) => {
       />
       <List>
         {paths?.map((path: IPathItem) => (
-          <ListItem
-            onClick={() => handleClick(path.id)}
-            className={activePath && activePath == path.id ? "active" : ""}
-            sx={listStyles}
+          <PathListItem
             key={path.id}
-            secondaryAction={
-              <IconButton>
-                <ArrowForwardIosIcon sx={arrowForwardStyles} />
-              </IconButton>
-            }
-          >
-            <ListItemAvatar
-              sx={{
-                minWidth: "unset",
-                marginRight: theme.spacing(2),
-              }}
-            >
-              <Arrows />
-            </ListItemAvatar>
-            <ListItemText
-              sx={listItemStyles}
-              primary={
-                <Typography variant="h6" sx={itemTitleStyles}>
-                  {!!path.isFavorite && <GradeIcon sx={starIconStyles} />}
-                  {path.title}
-                </Typography>
-              }
-              secondary={
-                <Typography variant="body1" sx={{ color: "inherit" }}>
-                  {path?.shortDescr}
-                </Typography>
-              }
-            />
-            <Typography variant="h6">{path.distance} km</Typography>
-          </ListItem>
+            handleClick={handleClick}
+            path={path}
+            activePath={activePath}
+          />
         ))}
       </List>
     </>
   );
 };
 
-const listStyles = {
-  background: "#f5f5f5",
-  marginBottom: theme.spacing(2),
-  padding: "10px 30px 10px 15px",
-  cursor: "pointer",
-  alignItems: "center",
-  transition: ".5s ease",
-  " svg": {
-    transition: ".5s ease",
-  },
-  "&:hover,&.active": {
-    backgroundColor: "#0088cc",
-    color: "#ffffff",
-  },
-  "&:hover svg, &.active svg": {
-    color: "#fff",
-  },
-};
-
 const inputStyles = {
   marginBottom: theme.spacing(3),
 };
-
-const starIconStyles = {
-  width: "20px",
-  height: "20px",
-  color: "#72badf",
-};
-
-const listItemStyles = {
-  flex: "none",
-  flexGrow: 1,
-  margin: 0,
-  color: "inherit",
-};
-
-const arrowForwardStyles = {
-  width: "20px",
-  height: "20px",
-  color: "inherit",
-};
-
-const itemTitleStyles = { display: "flex", alignItems: "center" };

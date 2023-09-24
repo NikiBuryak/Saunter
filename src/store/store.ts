@@ -1,5 +1,4 @@
 import { combineReducers,configureStore } from "@reduxjs/toolkit";
-import { type } from "os";
 import pathsReducer from './reducers/UseSlice'; 
 import { pathsApi } from "../services/PathService";
 

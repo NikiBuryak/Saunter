@@ -1,10 +1,10 @@
-import { IPosition } from "./IPosition"
+import { TPosition } from "./TPosition"
 
 export interface IPath{
     title:string,
     shortDescr:string|undefined,
     fullDescr:string|undefined,
-    paths:IPosition[]
+    paths:TPosition[]
     isFavorite:number
-    distance:number|undefined
+    distance:number
 }

@@ -25,6 +25,13 @@ export const theme = createTheme({
       lineHeight: 1.5,
       fontSize: "1rem",
     },
+    h5: {
+      fontWeight: 500,
+    },
+    h6: {
+      fontSize: "18px",
+      fontWeight: 600,
+    },
   },
   components: {
     MuiButton: {
@@ -57,10 +64,14 @@ export const theme = createTheme({
     MuiDialog: {
       styleOverrides: {
         paper: {
+          maxHeight: "unset",
+          height: "calc(100% - 20px)",
           maxWidth: "unset",
           margin: 0,
           width: "100%",
           "@media (min-width:600px)": {
+            maxHeight: "calc(100% - 64px)",
+            height: "auto",
             width: "calc(100% - 64px)",
             border: "3px solid #7c7c7c",
             borderRadius: "5px",
@@ -71,8 +82,8 @@ export const theme = createTheme({
           padding: 10,
 
           "@media (min-width:600px)": {
-            alignItems: "center",
             padding: 0,
+            marginTop: "20px",
           },
         },
       },
@@ -100,6 +111,10 @@ export const theme = createTheme({
     primary: {
       main: "#7c7c7c",
     },
+    info: {
+      main: "#7c7c7c",
+    },
   },
+
   spacing: 5,
 });

@@ -6,12 +6,12 @@ import { IForm } from "../models/IForm";
 import { theme } from "../theme";
 import MapIcon from "@mui/icons-material/Map";
 
-type Props = {
+interface IProps {
   submitHandler: (data: IForm) => void;
   distance?: number;
-};
+}
 
-export const PathForm = ({ submitHandler, distance }: Props) => {
+export const PathForm: FC<IProps> = ({ submitHandler, distance }) => {
   const { register, handleSubmit, formState } = useForm<IForm>({
     defaultValues: {
       title: "",
@@ -25,6 +25,7 @@ export const PathForm = ({ submitHandler, distance }: Props) => {
   const onSubmit = (data: IForm) => {
     submitHandler(data);
   };
+
   return (
     <form noValidate onSubmit={handleSubmit(onSubmit)}>
       <Stack>
@@ -43,6 +44,8 @@ export const PathForm = ({ submitHandler, distance }: Props) => {
         <TextField
           label="Short description"
           type="text"
+          multiline
+          rows={2}
           sx={{
             paddingBottom: theme.spacing(3),
           }}
@@ -56,7 +59,7 @@ export const PathForm = ({ submitHandler, distance }: Props) => {
           label="Full description"
           type="text"
           multiline
-          rows={3}
+          rows={4}
           sx={{
             paddingBottom: theme.spacing(3),
           }}
@@ -68,14 +71,7 @@ export const PathForm = ({ submitHandler, distance }: Props) => {
               padding: `${theme.spacing(6)} 0`,
             }}
           >
-            <Typography
-              variant="body1"
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <Typography variant="body1" sx={distanceTextStyles}>
               <MapIcon sx={{ marginRight: "5px" }} />
               Length {distance} km
             </Typography>
@@ -104,4 +100,10 @@ export const PathForm = ({ submitHandler, distance }: Props) => {
       </Stack>
     </form>
   );
+};
+
+const distanceTextStyles = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 };

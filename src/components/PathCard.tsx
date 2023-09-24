@@ -1,21 +1,19 @@
 import { Typography, Card, CardContent, Box } from "@mui/material";
-import { PathMap } from "./PathMap";
 import { theme } from "../theme";
 import { pathsApi } from "../services/PathService";
 import { IPath } from "../models/IPath";
-import { useState, useEffect } from "react";
+import { FC } from "react";
+import { Map } from "./Map";
 
 interface IProps {
   id: string;
   setActivePath: Function;
 }
 
-export const PathCard = ({ id, setActivePath }: IProps) => {
-  const {
-    data: currentData,
-    isLoading,
-    error,
-  } = pathsApi.useGetSinglePathQuery(id);
+export const PathCard: FC<IProps> = ({ id, setActivePath }) => {
+  const all = pathsApi.useGetSinglePathQuery(id);
+
+  const { data: currentData, isLoading, error } = all;
 
   const [changeFavorite, { isLoading: isLoadingChange, error: changeError }] =
     pathsApi.useChangeFavoriteMutation();
@@ -23,20 +21,17 @@ export const PathCard = ({ id, setActivePath }: IProps) => {
   const [deletePath, { isLoading: isLoadingError, error: deleteError }] =
     pathsApi.useDeletePathMutation();
 
-  if (!currentData && isLoading) {
-    <Box sx={errorBoxStyles}>
-      <Typography variant="body1">Loading.1..</Typography>;
-    </Box>;
-  }
   if (isLoading || isLoadingChange || isLoadingError) {
-    <Box sx={errorBoxStyles}>
-      <Typography variant="body1">Loading...</Typography>;
-    </Box>;
+    return (
+      <Box sx={errorBoxStyles}>
+        <Typography variant="body1">Loading...</Typography>
+      </Box>
+    );
   }
 
   if (error) {
     return (
-      <Box sx={{ background: "red" }}>
+      <Box sx={errorBoxStyles}>
         <Typography>Oops! Someting gone wrong. Try again later...</Typography>
       </Box>
     );
@@ -49,7 +44,11 @@ export const PathCard = ({ id, setActivePath }: IProps) => {
     );
   }
 
-  const { isFavorite, distance, title, fullDescr, paths } = currentData;
+  const { isFavorite, distance, title, fullDescr, paths } =
+    currentData as IPath;
+
+  const currentDistance =
+    distance > 1 ? `${distance} km` : `${distance * 1000} m`;
 
   const handleAddFavClick = () => {
     const data = { isFavorite, id };
@@ -78,11 +77,17 @@ export const PathCard = ({ id, setActivePath }: IProps) => {
     <Card sx={{ boxShadow: "none" }}>
       <CardContent sx={{ padding: 0 }}>
         <Box sx={cardHeadingStyles}>
-          <Typography variant="h5">{title}</Typography>
-          <Typography variant="h6">{distance} km</Typography>
+          <Typography variant="h6" sx={{ width: "80%", fontWeight: 500 }}>
+            {title}
+          </Typography>
+          <Typography variant="h6" sx={{ width: "20%" }}>
+            {currentDistance}
+          </Typography>
         </Box>
-        <Typography variant="body1">{fullDescr}</Typography>
-        <PathMap markers={markers} />
+        <Typography variant="body1" sx={fullDescriptionStyles}>
+          {fullDescr}
+        </Typography>
+        <Map markers={markers} />
         <Box sx={pathActionsStyles}>
           <Typography
             variant="body1"
@@ -129,6 +134,9 @@ const pathRemoveStyles = {
 const cardHeadingStyles = {
   display: "flex",
   justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: { xs: theme.spacing(2), md: theme.spacing(3) },
+  color: "#7c7c7c",
 };
 
 const errorBoxStyles = {
@@ -136,4 +144,9 @@ const errorBoxStyles = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+};
+
+const fullDescriptionStyles = {
+  marginBottom: { xs: theme.spacing(2), md: theme.spacing(3) },
+  color: "#7c7c7c",
 };

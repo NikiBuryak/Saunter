@@ -1,22 +1,22 @@
-import { useEffect, useMemo, useState, useRef } from "react";
-import { IMap, IPosition, TWayPoints, IMapRef } from "../models/IPosition";
+import { useMemo, useState, useRef } from "react";
+import { TPosition, TWayPoints } from "../models/TPosition";
 import { Box, Typography, Button } from "@mui/material";
-import {
-  GoogleMap,
-  Marker,
-  MarkerF,
-  useLoadScript,
-} from "@react-google-maps/api";
-import env from "react-dotenv";
-import { current } from "@reduxjs/toolkit";
+import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { log } from "console";
 import { useAppDispatch } from "../hooks/redux";
 import { pathSlice } from "../store/reducers/UseSlice";
-import { pathsApi } from "../services/PathService";
+
+interface IMap {
+  markers?: TPosition[];
+  setDistance?: Function;
+}
+
+interface IMapRef {
+  current: google.maps.Map | null;
+}
 
 export const Map: React.FC<IMap> = ({ markers, setDistance }) => {
-  const [mapMarkers, setMapMarkers] = useState<IPosition[] | undefined>(
+  const [mapMarkers, setMapMarkers] = useState<TPosition[] | undefined>(
     markers
   );
   const [isActive, setIsActive] = useState<boolean>(false);
@@ -44,12 +44,12 @@ export const Map: React.FC<IMap> = ({ markers, setDistance }) => {
     refMap.current = null;
   };
 
-  const handleMapClick = ({ latLng }: google.maps.MapMouseEvent): void => {
+  const handleMapClick = ({ latLng }: google.maps.MapMouseEvent) => {
     const lat: number | undefined = latLng?.lat();
     const lng: number | undefined = latLng?.lng();
 
     if (lat && lng) {
-      const newMarker: IPosition = {
+      const newMarker: TPosition = {
         lat,
         lng,
       };
@@ -120,45 +120,57 @@ export const Map: React.FC<IMap> = ({ markers, setDistance }) => {
   }
 
   return (
-    <GoogleMap
-      zoom={10}
-      center={centerMap}
-      onLoad={handleLoadMap}
-      onUnmount={handleUnmountMap}
-      mapContainerStyle={{
-        width: "100%",
-        height: "300px",
-      }}
-      options={{
-        clickableIcons: false,
-        disableDefaultUI: true,
-        disableDoubleClickZoom: true,
-        fullscreenControl: false,
-        mapId: "8ac5887943cb7d16",
-      }}
-      {...(!markers?.length && isActive && { onClick: handleMapClick })}
-    >
-      {!markers && !isActive && (
-        <Button
-          variant="outlined"
-          startIcon={<LocationOnIcon />}
-          onClick={() => setIsActive(!isActive)}
-          sx={{
-            left: "50%",
-            top: "10px",
-            transform: "translateX(-50%)",
-          }}
-        >
-          Add Marker
-        </Button>
-      )}
+    <Box sx={mapWrapperStyles}>
+      <GoogleMap
+        zoom={10}
+        center={centerMap}
+        onLoad={handleLoadMap}
+        onUnmount={handleUnmountMap}
+        mapContainerStyle={mapStyles}
+        options={mapOptions}
+        {...(!markers?.length && isActive && { onClick: handleMapClick })}
+      >
+        {!markers && !isActive && (
+          <Button
+            variant="outlined"
+            startIcon={<LocationOnIcon />}
+            onClick={() => setIsActive(!isActive)}
+            sx={markerStyles}
+          >
+            Add Marker
+          </Button>
+        )}
 
-      {mapMarkers?.map((mapMarker, index) => (
-        <MarkerF
-          position={{ lat: mapMarker.lat, lng: mapMarker.lng }}
-          key={index}
-        />
-      ))}
-    </GoogleMap>
+        {mapMarkers?.map((mapMarker, index) => (
+          <MarkerF
+            position={{ lat: mapMarker.lat, lng: mapMarker.lng }}
+            key={index}
+          />
+        ))}
+      </GoogleMap>
+    </Box>
   );
+};
+
+const mapStyles = {
+  width: "100%",
+  height: "400px",
+};
+
+const mapOptions = {
+  clickableIcons: false,
+  disableDefaultUI: true,
+  disableDoubleClickZoom: true,
+  fullscreenControl: false,
+  mapId: "8ac5887943cb7d16",
+};
+const mapWrapperStyles = {
+  border: "1px solid #7c7c7c",
+  height: "100%",
+};
+
+const markerStyles = {
+  left: "50%",
+  top: "10px",
+  transform: "translateX(-50%)",
 };

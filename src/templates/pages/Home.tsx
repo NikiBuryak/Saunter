@@ -9,7 +9,7 @@ export const HomeTempl: FC = () => {
   const [activePath, setActivePath] = useState<string | null>(null);
 
   return (
-    <Grid container sx={mainGridStyles}>
+    <Grid container sx={mainGridStyles} gap={8}>
       <Grid item xs={12} md={6} sx={firstGrid}>
         <PathList setActivePath={setActivePath} activePath={activePath} />
       </Grid>
@@ -27,30 +27,33 @@ export const HomeTempl: FC = () => {
   );
 };
 
-const gridStyles = {
-  padding: {
-    xs: `0`,
-    md: `0 ${theme.spacing(4)}`,
-    lg: `0 ${theme.spacing(5)}`,
-  },
+const firstGrid = {
+  paddingBottom: { xs: theme.spacing(2), md: 0 },
   maxHeight: "500px",
   overflow: "auto",
 };
-const firstGrid = {
-  ...gridStyles,
-  borderRight: { xs: 0, md: "2px solid #7c7c7c" },
-
-  paddingLeft: { md: 0 },
-  paddingBottom: { xs: theme.spacing(2), md: 0 },
-};
 const lastGrid = {
-  ...gridStyles,
-  paddingRight: { md: 0 },
   paddingTop: { xs: theme.spacing(2), md: 0 },
   borderTop: { xs: "2px solid #7c7c7c", md: 0 },
+  paddingRight: { xs: 0, md: "20px" },
+  maxHeight: "500px",
+  overflow: "auto",
 };
 
 const mainGridStyles = {
   paddingTop: "20px",
   overflow: "auto",
+  flexWrap: { xs: "wrap", md: "nowrap" },
+  position: "relative",
+  "&:before": {
+    content: '""',
+    height: "calc(100% - 20px)",
+    display: { xs: "none", md: "block" },
+    position: "absolute",
+    left: "50%",
+    transform: "translateX(-50%)",
+    bottom: "0",
+    width: "1.5px",
+    backgroundColor: "#7c7c7c",
+  },
 };

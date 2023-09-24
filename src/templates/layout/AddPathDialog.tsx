@@ -10,7 +10,9 @@ import { IForm } from "../../models/IForm";
 import { pathsApi } from "../../services/PathService";
 
 export const AddPathDialog: FC = () => {
-  const { isDialogOpened } = useAppSelector((state) => state.pathsReducer);
+  const isDialogOpened = useAppSelector(
+    (state) => state.pathsReducer.isDialogOpened
+  );
   const [distance, setDistance] = useState<number>(0);
   const dispatch = useAppDispatch();
   const markers = useAppSelector((state) => state.pathsReducer.paths);
@@ -77,7 +79,7 @@ export const AddPathDialog: FC = () => {
 const dialogStyles = {
   padding: { xs: "10px 0", md: "50px 0" },
   display: "block",
-  maxWidth: "850px",
+  maxWidth: "1050px",
   minHeight: "550px",
   margin: "0 auto",
 };
@@ -85,7 +87,7 @@ const contentWrapperStyles = {
   width: "100%",
   height: "100%",
   display: "block",
-  maxWidth: "800px",
+  maxWidth: "1050px",
   padding: 0,
 };
 const headerWrapperStyles = {
@@ -96,4 +98,5 @@ const headerWrapperStyles = {
 };
 const dialogColumnStyles = {
   padding: theme.spacing(3),
+  height: "100%",
 };
