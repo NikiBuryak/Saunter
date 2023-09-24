@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/Saunter/static/css/main.4dd63817.css",
-    "main.js": "/Saunter/static/js/main.b57462a6.js",
+    "main.js": "/Saunter/static/js/main.3770354b.js",
     "index.html": "/Saunter/index.html",
     "main.4dd63817.css.map": "/Saunter/static/css/main.4dd63817.css.map",
-    "main.b57462a6.js.map": "/Saunter/static/js/main.b57462a6.js.map"
+    "main.3770354b.js.map": "/Saunter/static/js/main.3770354b.js.map"
   },
   "entrypoints": [
     "static/css/main.4dd63817.css",
-    "static/js/main.b57462a6.js"
+    "static/js/main.3770354b.js"
   ]
 }
