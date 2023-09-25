@@ -1,5 +1,4 @@
 import {createSlice,PayloadAction} from "@reduxjs/toolkit"
-import { IPath } from "../../models/IPath"
 import { TPosition } from "../../models/TPosition";
 
 interface PathState {
